@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  test_build_multitool_aws_v2:
+    build: .
+    image: test_build_multitool_aws_v2
+    container_name: test_build_multitool_aws_v2
+    volumes:
+      - $HOME/.aws:/root/.aws
+    entrypoint: ["/bin/sleep", "infinity"]

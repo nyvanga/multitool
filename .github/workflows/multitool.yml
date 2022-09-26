@@ -1,0 +1,199 @@
+name: Multitool
+
+on:
+  schedule: 
+    - cron: '30 1 * * 6'
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+
+jobs:
+  multitools:
+    name: Base image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Setup Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Docker login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build and push multitool
+        uses: docker/build-push-action@v3
+        with:
+          context: multitool/
+          platforms: linux/amd64,linux/arm64/v8
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |
+            nyvanga/multitool:latest
+
+  kubernetes-versions:
+    name: Kubernetes versions
+    runs-on: ubuntu-latest
+    needs:
+      - multitools
+    outputs:
+      major0: ${{ steps.get_k8s_version.outputs.major0 }}
+      minor0: ${{ steps.get_k8s_version.outputs.minor0 }}
+      major1: ${{ steps.get_k8s_version.outputs.major1 }}
+      minor1: ${{ steps.get_k8s_version.outputs.minor1 }}
+      major2: ${{ steps.get_k8s_version.outputs.major2 }}
+      minor2: ${{ steps.get_k8s_version.outputs.minor2 }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Lookup latest 3 major versions of Kubernetes
+        id: get_k8s_version
+        run: ./get_versions.sh kubernetes github_actions
+
+  multitools-kubernetes:
+    name: Kubernetes ${{ matrix.major }} (${{ matrix.minor }})
+    runs-on: ubuntu-latest
+    needs:
+      - Kubernetes-versions
+    strategy:
+      matrix:
+        major:
+          - "${{ needs.kubernetes-versions.outputs.major0 }}"
+          - "${{ needs.kubernetes-versions.outputs.major1 }}"
+          - "${{ needs.kubernetes-versions.outputs.major2 }}"
+        include:
+          - major: "${{ needs.kubernetes-versions.outputs.major0 }}"
+            minor: "${{ needs.kubernetes-versions.outputs.minor0 }}"
+          - major: "${{ needs.kubernetes-versions.outputs.major1 }}"
+            minor: "${{ needs.kubernetes-versions.outputs.minor1 }}"
+          - major: "${{ needs.kubernetes-versions.outputs.major2 }}"
+            minor: "${{ needs.kubernetes-versions.outputs.minor2 }}"
+    steps:
+      - uses: actions/checkout@v3
+      - name: Docker login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build and push multitool-k8s
+        uses: docker/build-push-action@v3
+        with:
+          context: multitool-k8s/
+          build-args: |
+            KUBERNETES_VERSION=${{ matrix.minor }}
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |
+            nyvanga/multitool-k8s:${{ matrix.major }}
+            nyvanga/multitool-k8s:${{ matrix.minor }}
+
+  multitools-aws-v1:
+    name: AWS CLI v1
+    runs-on: ubuntu-latest
+    needs:
+      - multitools
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Setup Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Docker login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build and push multitool-aws-v1
+        uses: docker/build-push-action@v3
+        with:
+          context: multitool-aws-v1/
+          platforms: linux/amd64,linux/arm64/v8
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |
+            nyvanga/multitool-aws:v1
+
+  multitools-aws-v2:
+    name: AWS CLI v2
+    runs-on: ubuntu-latest
+    needs:
+      - multitools
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Setup Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Docker login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build and push multitool-aws-v2
+        uses: docker/build-push-action@v3
+        with:
+          context: multitool-aws-v2/
+          platforms: linux/amd64,linux/arm64/v8
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |
+            nyvanga/multitool-aws:latest
+            nyvanga/multitool-aws:v2
+
+  terraform-versions:
+    name: Terraform versions
+    runs-on: ubuntu-latest
+    needs:
+      - multitools
+    outputs:
+      major0: ${{ steps.get_tf_version.outputs.major0 }}
+      minor0: ${{ steps.get_tf_version.outputs.minor0 }}
+      major1: ${{ steps.get_tf_version.outputs.major1 }}
+      minor1: ${{ steps.get_tf_version.outputs.minor1 }}
+      major2: ${{ steps.get_tf_version.outputs.major2 }}
+      minor2: ${{ steps.get_tf_version.outputs.minor2 }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Lookup latest 3 major versions of Terraform
+        id: get_tf_version
+        run: ./get_versions.sh terraform github_actions
+
+  multitools-tf:
+    name: Terraform ${{ matrix.major }} (${{ matrix.minor }})
+    runs-on: ubuntu-latest
+    needs:
+      - terraform-versions
+    strategy:
+      matrix:
+        major:
+          - "${{ needs.terraform-versions.outputs.major0 }}"
+          - "${{ needs.terraform-versions.outputs.major1 }}"
+          - "${{ needs.terraform-versions.outputs.major2 }}"
+        include:
+          - major: "${{ needs.terraform-versions.outputs.major0 }}"
+            minor: "${{ needs.terraform-versions.outputs.minor0 }}"
+          - major: "${{ needs.terraform-versions.outputs.major1 }}"
+            minor: "${{ needs.terraform-versions.outputs.minor1 }}"
+          - major: "${{ needs.terraform-versions.outputs.major2 }}"
+            minor: "${{ needs.terraform-versions.outputs.minor2 }}"
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Setup Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Docker login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build and push multitool-tf
+        uses: docker/build-push-action@v3
+        with:
+          context: multitool-tf/
+          build-args: |
+            TERRAFORM_VERSION=${{ matrix.minor }}
+          platforms: linux/amd64,linux/arm64/v8
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |
+            nyvanga/multitool-tf:${{ matrix.major }}
+            nyvanga/multitool-tf:${{ matrix.minor }}

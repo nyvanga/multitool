@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  test_build_multitool_k8s:
+    build:
+      context: .
+      args:
+        - KUBERNETES_VERSION=1.25.0
+    image: test_build_multitool_k8s
+    container_name: test_build_multitool_k8s

@@ -13,7 +13,7 @@ jobs:
     name: Base image
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v2
       - name: Setup Buildx
@@ -45,7 +45,7 @@ jobs:
       major2: ${{ steps.get_k8s_version.outputs.major2 }}
       minor2: ${{ steps.get_k8s_version.outputs.minor2 }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Lookup latest 3 major versions of Kubernetes
         id: get_k8s_version
         run: ./get_versions.sh kubernetes github_actions
@@ -69,7 +69,7 @@ jobs:
           - major: "${{ needs.kubernetes-versions.outputs.major2 }}"
             minor: "${{ needs.kubernetes-versions.outputs.minor2 }}"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Docker login
         uses: docker/login-action@v2
         with:
@@ -92,7 +92,7 @@ jobs:
     needs:
       - multitools
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v2
       - name: Setup Buildx
@@ -117,7 +117,7 @@ jobs:
     needs:
       - multitools
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v2
       - name: Setup Buildx
@@ -150,7 +150,7 @@ jobs:
       major2: ${{ steps.get_tf_version.outputs.major2 }}
       minor2: ${{ steps.get_tf_version.outputs.minor2 }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Lookup latest 3 major versions of Terraform
         id: get_tf_version
         run: ./get_versions.sh terraform github_actions
@@ -174,7 +174,7 @@ jobs:
           - major: "${{ needs.terraform-versions.outputs.major2 }}"
             minor: "${{ needs.terraform-versions.outputs.minor2 }}"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v2
       - name: Setup Buildx

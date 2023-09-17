@@ -9,7 +9,5 @@ There are 5 versions:
 	- Images: [nyvanga/multitool-tf](https://hub.docker.com/r/nyvanga/multitool-tf)
 - [Kubernetes](multitool-k8s): Multi tool image with kubectl included, and running ```kubectl proxy``` as entrypoint.
 	- Images: [nyvanga/multitool-k8s](https://hub.docker.com/r/nyvanga/multitool-k8s)
-- [AWS CLI v1](multitool-aws-v1): Multi tool image with AWS CLI v1 included.
-	- Images: [nyvanga/multitool-aws:v1](https://hub.docker.com/r/nyvanga/multitool-aws)
 - [AWS CLI v2](multitool-aws-v2): Multi tool image with AWS CLI v2 included.
 	- Images: [nyvanga/multitool-aws](https://hub.docker.com/r/nyvanga/multitool-aws)

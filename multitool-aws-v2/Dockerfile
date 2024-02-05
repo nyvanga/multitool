@@ -5,6 +5,13 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-$(arch).zip" -o "awscliv
 	./aws/install && \
 	rm -rf awscliv2.zip aws/
 
-COPY entrypoint.sh /usr/local/bin/
+ARG DEBIAN_FRONTEND=noninteractive
 
-ENTRYPOINT ["entrypoint.sh"]
+RUN set -x && \
+    apt-get update -qq && \
+    apt-get upgrade -qq && \
+    apt-get install -qq --no-install-recommends \
+      python3-boto3 && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY /bin/* /usr/local/bin/

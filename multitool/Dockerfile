@@ -5,8 +5,9 @@ ENV TZ=Europe/Copenhagen
 
 WORKDIR /multitool
 
-RUN DEBIAN_FRONTEND=noninteractive && \
-    set -x && \
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN set -x && \
     apt-get update -qq && \
     apt-get upgrade -qq && \
     apt-get install -qq --no-install-recommends \

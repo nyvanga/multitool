@@ -7,16 +7,14 @@ Run on docker:
 docker run -it --rm -v $HOME/.aws:/root/.aws --name multitool-aws nyvanga/multitool-aws
 ```
 
-Maybe put in some aliases in your .bashrc file:
+Directly run AWS commands:
 ```
-alias aws='docker run -it --rm -v $HOME/.aws:/root/.aws --name aws-default nyvanga/multitool-aws:v2'
-alias aws-dev='docker run -it --rm -v $HOME/.aws:/root/.aws -e AWS_PROFILE=dev --name aws-dev nyvanga/multitool-aws:v2'
-alias aws-qa='docker run -it --rm -v $HOME/.aws:/root/.aws -e AWS_PROFILE=qa --name aws-qa nyvanga/multitool-aws:v2'
+docker run -it --rm -v $HOME/.aws:/root/.aws --name multitool-aws nyvanga/multitool-aws s3api list-buckets
 ```
 
-And then run your commands as always, but choose the environment easy, and without resorting to 'profiles'.
+Directly run scripts in `/usr/local/bin`:
 ```
-aws-dev s3api list-buckets
+docker run -it --rm -v $HOME/.aws:/root/.aws --name multitool-aws nyvanga/multitool-aws s3_delete_all_versions.py <bucket-name>
 ```
 
 ## Test build

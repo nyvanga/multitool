@@ -17,6 +17,15 @@ Directly run scripts in `/usr/local/bin`:
 docker run -it --rm -v $HOME/.aws:/root/.aws --name multitool-aws nyvanga/multitool-aws s3_delete_all_versions.py <bucket-name>
 ```
 
+Some of the more DANGEROUS variants:
+```
+docker run -it --rm -v $HOME/.aws:/root/.aws --name multitool-aws nyvanga/multitool-aws s3_delete_all_buckets.sh
+```
+Or:
+```
+docker run -it --rm -v $HOME/.aws:/root/.aws --name multitool-aws nyvanga/multitool-aws dynamodb_delete_all_tables.sh
+```
+
 ## Test build
 
 First run:

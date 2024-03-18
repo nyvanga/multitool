@@ -1,4 +1,4 @@
-FROM debian:bookworm-20240211-slim
+FROM debian:bookworm-20240311-slim
 MAINTAINER Anders Nyvang
 
 ENV TZ=Europe/Copenhagen

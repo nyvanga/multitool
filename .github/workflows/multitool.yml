@@ -24,7 +24,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build and push multitool
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: multitool/
           platforms: linux/amd64,linux/arm64/v8
@@ -76,7 +76,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build and push multitool-k8s
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: multitool-k8s/
           build-args: |
@@ -103,7 +103,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build and push multitool-aws-v2
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: multitool-aws-v2/
           platforms: linux/amd64,linux/arm64/v8
@@ -160,7 +160,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Build and push multitool-tf
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: multitool-tf/
           build-args: |
